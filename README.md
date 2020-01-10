@@ -36,69 +36,132 @@ sensors/power/p1meter/short_power_drops 0
 sensors/power/p1meter/short_power_peaks 0
 ```
 
-As I don't have solar panels (yet) I do not collect the data for power returns as I don't have any.
-They are however easy to add if you know the codes used.
+This fork has some extra topics for return delivery and dutch 3Phase system
 
 ## Home Assistant Configuration
 
 I use this for home assistant `sensors.yaml`:
 
 ```
-- platform: mqtt
-  name: P1 Consumption Low Tarif
-  unit_of_measurement: 'kWh'
-  state_topic: "sensors/power/p1meter/consumption_low_tarif"
-  value_template: "{{ value|float / 1000 }}"
-
-- platform: mqtt
-  name: P1 Consumption High Tarif
-  unit_of_measurement: 'kWh'
-  state_topic: "sensors/power/p1meter/consumption_high_tarif"
-  value_template: "{{ value|float / 1000 }}"
-
-- platform: mqtt
-  name: P1 Actual Power Consumption
-  unit_of_measurement: 'kW'
-  state_topic: "sensors/power/p1meter/actual_consumption"
-  value_template: "{{ value|float / 1000 }}"
-
-- platform: mqtt
-  name: P1 Instant Power Usage
-  unit_of_measurement: 'kW'
-  state_topic: "sensors/power/p1meter/instant_power_usage"
-  value_template: "{{ value|float / 1000 }}"
-
-- platform: mqtt
-  name: P1 Instant Power Current
-  unit_of_measurement: 'A'
-  state_topic: "sensors/power/p1meter/instant_power_current"
-  value_template: "{{ value|float / 1000 }}"
-
-- platform: mqtt
-  name: P1 Gas Usage
-  unit_of_measurement: 'm3'
-  state_topic: "sensors/power/p1meter/gas_meter_m3"
-  value_template: "{{ value|float / 1000 }}"
-
-- platform: mqtt
-  name: P1 Actual Tarif Group
-  state_topic: "sensors/power/p1meter/actual_tarif_group"
-
-- platform: mqtt
-  name: P1 Short Power Outages
-  state_topic: "sensors/power/p1meter/short_power_outages"
-
-- platform: mqtt
-  name: P1 Long Power Outages
-  state_topic: "sensors/power/p1meter/long_power_outages"
-
-- platform: mqtt
-  name: P1 Short Power Drops
-  state_topic: "sensors/power/p1meter/short_power_drops"
-
-- platform: mqtt
-  name: P1 Short Power Peaks
-  state_topic: "sensors/power/p1meter/short_power_peaks"
+ - platform: mqtt
+   name: P1 Consumption Low Tarif
+   unit_of_measurement: 'kWh'
+   state_topic: "sensors/power/p1meter/consumption_low_tarif"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:counter
+   #
+ - platform: mqtt
+   name: P1 Delivery Low Tarif
+   unit_of_measurement: 'kWh'
+   state_topic: "sensors/power/p1meter/delivery_low_tarif"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:counter
+   #
+ - platform: mqtt
+   name: P1 Consumption High Tarif
+   unit_of_measurement: 'kWh'
+   state_topic: "sensors/power/p1meter/consumption_high_tarif"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:counter
+   #
+ - platform: mqtt
+   name: P1 Delivery High Tarif
+   unit_of_measurement: 'kWh'
+   state_topic: "sensors/power/p1meter/delivery_high_tarif"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:counter
+   #
+ - platform: mqtt
+   name: P1 Actual Power Consumption
+   unit_of_measurement: 'kW'
+   state_topic: "sensors/power/p1meter/actual_consumption"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:speedometer
+   #
+ - platform: mqtt
+   name: P1 Actual Power Delivery
+   unit_of_measurement: 'kW'
+   state_topic: "sensors/power/p1meter/actual_delivery"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:speedometer
+   #
+ - platform: mqtt
+   name: P1 Instant Power Usage
+   unit_of_measurement: 'kW'
+   state_topic: "sensors/power/p1meter/instant_power_usage"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:speedometer
+   #
+ - platform: mqtt
+   name: P1 L1 Instant Power Current
+   unit_of_measurement: 'A'
+   state_topic: "sensors/power/p1meter/l1_instant_power_current"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:speedometer
+   #
+ - platform: mqtt
+   name: P1 L2 Instant Power Current
+   unit_of_measurement: 'A'
+   state_topic: "sensors/power/p1meter/l2_instant_power_current"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:speedometer
+   #
+ - platform: mqtt
+   name: P1 L3 Instant Power Current
+   unit_of_measurement: 'A'
+   state_topic: "sensors/power/p1meter/l3_instant_power_current"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:speedometer
+   #   
+ - platform: mqtt
+   name: P1 L1 Voltage
+   unit_of_measurement: 'V'   
+   state_topic: "sensors/power/p1meter/l1_voltage"
+   icon: mdi:speedometer
+   #
+ - platform: mqtt
+   name: P1 L2 Voltage
+   unit_of_measurement: 'V'   
+   state_topic: "sensors/power/p1meter/l2_voltage"
+   icon: mdi:speedometer
+   #
+ - platform: mqtt
+   name: P1 L3 Voltage
+   unit_of_measurement: 'V'   
+   state_topic: "sensors/power/p1meter/l3_voltage"
+   icon: mdi:speedometer
+   #
+ - platform: mqtt
+   name: P1 Gas Usage
+   unit_of_measurement: 'm3'
+   state_topic: "sensors/power/p1meter/gas_meter_m3"
+   value_template: "{{ value|float / 1000 }}"
+   icon: mdi:counter
+   #
+ - platform: mqtt
+   name: P1 Actual Tarif Group
+   state_topic: "sensors/power/p1meter/actual_tarif_group"
+   #
+ - platform: mqtt
+   name: P1 Short Power Outages
+   state_topic: "sensors/power/p1meter/short_power_outages"
+   icon: mdi:exclamation
+   #
+ - platform: mqtt
+   name: P1 Long Power Outages
+   state_topic: "sensors/power/p1meter/long_power_outages"
+   icon: mdi:exclamation
+   #
+ - platform: mqtt
+   name: P1 Short Power Drops
+   state_topic: "sensors/power/p1meter/short_power_drops"
+   icon: mdi:exclamation
+   #
+ - platform: mqtt
+   name: P1 Short Power Peaks
+   state_topic: "sensors/power/p1meter/short_power_peaks"
+   icon: mdi:exclamation
+   #
 ```
 
 The automations are yours to create.
