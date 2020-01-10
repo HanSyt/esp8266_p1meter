@@ -1,11 +1,11 @@
 #include <FS.h>
 #include <EEPROM.h>
-#include <DNSServer.h>
+// * #include <DNSServer.h>
 #include <ESP8266WiFi.h>
 #include <Ticker.h>
 #include <WiFiManager.h>
 #include <ESP8266mDNS.h>
-#include <WiFiUdp.h>
+// * #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <PubSubClient.h>
 #include <SoftwareSerial.h>
@@ -23,7 +23,7 @@ WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
 
 // * Initiate Software Serial
-SoftwareSerial p1_serial(P1_SERIAL_RX, -1, true, P1_MAXLINELENGTH); // (RX, TX. inverted, buffer)
+SoftwareSerial p1_serial(P1_SERIAL_RX, -1, true); // (RX, TX. inverted)
 
 // **********************************
 // * WIFI                           *
@@ -134,11 +134,20 @@ void send_metric(String name, long metric)
 void send_data_to_broker()
 {
     send_metric("consumption_low_tarif", CONSUMPTION_LOW_TARIF);
+    send_metric("delivery_low_tarif", DELIVERY_LOW_TARIF);
     send_metric("consumption_high_tarif", CONSUMPTION_HIGH_TARIF);
+    send_metric("delivery_high_tarif", DELIVERY_HIGH_TARIF);
     send_metric("actual_consumption", ACTUAL_CONSUMPTION);
+    send_metric("actual_delivery", ACTUAL_DELIVERY);
     send_metric("instant_power_usage", INSTANT_POWER_USAGE);
-    send_metric("instant_power_current", INSTANT_POWER_CURRENT);
+    send_metric("l1_instant_power_current", L1_INSTANT_POWER_CURRENT);
+    send_metric("l2_instant_power_current", L2_INSTANT_POWER_CURRENT);
+    send_metric("l3_instant_power_current", L3_INSTANT_POWER_CURRENT);
     send_metric("gas_meter_m3", GAS_METER_M3);
+    
+    send_metric("l1_voltage", L1_VOLTAGE);
+    send_metric("l2_voltage", L2_VOLTAGE);
+    send_metric("l3_voltage", L3_VOLTAGE);
 
     send_metric("actual_tarif_group", ACTUAL_TARIF);
     send_metric("short_power_outages", SHORT_POWER_OUTAGES);
@@ -259,16 +268,27 @@ bool decode_telegram(int len)
 
     // 1-0:1.8.1(000992.992*kWh)
     // 1-0:1.8.1 = Elektra verbruik laag tarief (DSMR v4.0)
+    // 1-0:2.8.1 = Elektra opbrengst laag tarief (DSMR v4.0)
     if (strncmp(telegram, "1-0:1.8.1", strlen("1-0:1.8.1")) == 0)
     {
         CONSUMPTION_LOW_TARIF = getValue(telegram, len, '(', '*');
     }
+    if (strncmp(telegram, "1-0:2.8.1", strlen("1-0:2.8.1")) == 0)
+    {
+        DELIVERY_LOW_TARIF = getValue(telegram, len, '(', '*');
+    }
+
 
     // 1-0:1.8.2(000560.157*kWh)
     // 1-0:1.8.2 = Elektra verbruik hoog tarief (DSMR v4.0)
+    // 1-0:2.8.2 = Elektra opbrengst hoog tarief (DSMR v4.0)
     if (strncmp(telegram, "1-0:1.8.2", strlen("1-0:1.8.2")) == 0)
     {
         CONSUMPTION_HIGH_TARIF = getValue(telegram, len, '(', '*');
+    }
+    if (strncmp(telegram, "1-0:2.8.2", strlen("1-0:2.8.2")) == 0)
+    {
+        DELIVERY_HIGH_TARIF = getValue(telegram, len, '(', '*');
     }
 
     // 1-0:1.7.0(00.424*kW) Actueel verbruik
@@ -278,6 +298,11 @@ bool decode_telegram(int len)
     {
         ACTUAL_CONSUMPTION = getValue(telegram, len, '(', '*');
     }
+    if (strncmp(telegram, "1-0:2.7.0", strlen("1-0:2.7.0")) == 0)
+    {
+        ACTUAL_DELIVERY = getValue(telegram, len, '(', '*');
+    }
+
 
     // 1-0:21.7.0(00.378*kW)
     // 1-0:21.7.0 = Instantaan vermogen Elektriciteit levering
@@ -287,10 +312,22 @@ bool decode_telegram(int len)
     }
 
     // 1-0:31.7.0(002*A)
-    // 1-0:31.7.0 = Instantane stroom Elektriciteit
+    // 1-0:31.7.0 = Instantane stroom Elektriciteit L1
     if (strncmp(telegram, "1-0:31.7.0", strlen("1-0:31.7.0")) == 0)
     {
-        INSTANT_POWER_CURRENT = getValue(telegram, len, '(', '*');
+        L1_INSTANT_POWER_CURRENT = getValue(telegram, len, '(', '*');
+    }
+    // 1-0:51.7.0(002*A)
+    // 1-0:51.7.0 = Instantane stroom Elektriciteit L2
+    if (strncmp(telegram, "1-0:51.7.0", strlen("1-0:51.7.0")) == 0)
+    {
+        L2_INSTANT_POWER_CURRENT = getValue(telegram, len, '(', '*');
+    }
+    // 1-0:71.7.0(002*A)
+    // 1-0:71.7.0 = Instantane stroom Elektriciteit L3
+    if (strncmp(telegram, "1-0:71.7.0", strlen("1-0:71.7.0")) == 0)
+    {
+        L3_INSTANT_POWER_CURRENT = getValue(telegram, len, '(', '*');
     }
 
     // 0-1:24.2.1(150531200000S)(00811.923*m3)
@@ -300,6 +337,25 @@ bool decode_telegram(int len)
         GAS_METER_M3 = getValue(telegram, len, '(', '*');
     }
 
+    // 1-0:32.7.0(229.0*V)
+    // 1-0:32.7.0 = L1 Voltage
+    if (strncmp(telegram, "1-0:32.7.0", strlen("1-0:32.7.0")) == 0)
+    {
+        L1_VOLTAGE = getValue(telegram, len, '(', ')');
+    }
+    // 1-0:52.7.0(226.0*V)
+    // 1-0:52.7.0 = L2 Voltage
+    if (strncmp(telegram, "1-0:52.7.0", strlen("1-0:52.7.0")) == 0)
+    {
+        L1_VOLTAGE = getValue(telegram, len, '(', ')');
+    }   
+    // 1-0:72.7.0(229.0*V)
+    // 1-0:72.7.0 = L3 Voltage
+    if (strncmp(telegram, "1-0:72.7.0", strlen("1-0:72.7.0")) == 0)
+    {
+        L1_VOLTAGE = getValue(telegram, len, '(', ')');
+    }
+    
     // 0-0:96.14.0(0001)
     // 0-0:96.14.0 = Actual Tarif
     if (strncmp(telegram, "0-0:96.14.0", strlen("0-0:96.14.0")) == 0)
