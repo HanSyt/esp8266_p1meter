@@ -2,14 +2,8 @@
 // * Ledstrip Settings              *
 // **********************************
 
-// * Baud rate for both hardware and software serial
-// * #define BAUD_RATE 11200
-
 // * P1 Meter RX pin D2 = 4 on Wemos D1 mini
 #define P1_SERIAL_RX D2
-
-// * Max telegram length
-// *#define P1_MAXLINELENGTH 64
 
 // * The hostname of our little creature
 #define HOSTNAME "p1meter"
@@ -30,13 +24,10 @@
 long LAST_RECONNECT_ATTEMPT = 0;
 
 // * To be filled with EEPROM data
-char MQTT_HOST[64] = "192.168.2.6";
+char MQTT_HOST[64] = "192.168.2.x";
 char MQTT_PORT[6]  = "1883";
-char MQTT_USER[32] = "mqtt";
-char MQTT_PASS[32] = "mqtt_123";
-
-// * Set to store received telegram
-// * char telegram[P1_MAXLINELENGTH];
+char MQTT_USER[32] = "mqtt_user";
+char MQTT_PASS[32] = "mqtt_pass";
 
 // * Set to store the data values read
 long CONSUMPTION_LOW_TARIF;
