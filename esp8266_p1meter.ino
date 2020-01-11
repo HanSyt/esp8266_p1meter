@@ -5,7 +5,7 @@
 #include <Ticker.h>
 #include <WiFiManager.h>
 #include <ESP8266mDNS.h>
-// * #include <WiFiUdp.h>
+#include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <PubSubClient.h>
 #include <SoftwareSerial.h>
@@ -22,8 +22,17 @@ WiFiClient espClient;
 // * Initiate MQTT client
 PubSubClient mqtt_client(espClient);
 
+// * Buffer definition
+const int P1_MAXLINELENGTH = 64;
+char telegram[P1_MAXLINELENGTH];
+
 // * Initiate Software Serial
-SoftwareSerial p1_serial(P1_SERIAL_RX, -1, true); // (RX, TX. inverted)
+SoftwareSerial p1_serial; 
+constexpr SoftwareSerialConfig swSerialConfig = SWSERIAL_8N1;
+constexpr int BAUD_RATE = 115200;
+
+// * 
+// *p1_serial.begin (BAUD_RATE, swSerialConfig, P1_SERIAL_RX, -1, true, P1_MAXLINELENGTH); 
 
 // **********************************
 // * WIFI                           *
@@ -543,7 +552,8 @@ void setup()
     ticker.attach(0.6, tick);
 
     // * Start software serial for p1 meter
-    p1_serial.begin(BAUD_RATE);
+    // * p1_serial.begin(BAUD_RATE);
+    p1_serial.begin (BAUD_RATE, swSerialConfig, P1_SERIAL_RX, -1, true, P1_MAXLINELENGTH); 
 
     // * Get MQTT Server settings
     String settings_available = read_eeprom(134, 1);
