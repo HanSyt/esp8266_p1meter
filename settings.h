@@ -40,11 +40,21 @@ char telegram[P1_MAXLINELENGTH];
 
 // * Set to store the data values read
 long CONSUMPTION_LOW_TARIF;
+long DELIVERY_LOW_TARIF;
 long CONSUMPTION_HIGH_TARIF;
+long DELIVERY_HIGH_TARIF;
 long ACTUAL_CONSUMPTION;
-long INSTANT_POWER_CURRENT;
+long ACTUAL_DELIVERY;
+long L1_INSTANT_POWER_CURRENT;
+long L2_INSTANT_POWER_CURRENT;
+long L3_INSTANT_POWER_CURRENT;
 long INSTANT_POWER_USAGE;
 long GAS_METER_M3;
+
+// * Set to Store Line Voltage
+long L1_VOLTAGE;
+long L2_VOLTAGE;
+long L3_VOLTAGE;
 
 // Set to store data counters read
 long ACTUAL_TARIF;
