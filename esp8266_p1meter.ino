@@ -31,9 +31,6 @@ SoftwareSerial p1_serial;
 constexpr SoftwareSerialConfig swSerialConfig = SWSERIAL_8N1;
 constexpr int BAUD_RATE = 115200;
 
-// * 
-// *p1_serial.begin (BAUD_RATE, swSerialConfig, P1_SERIAL_RX, -1, true, P1_MAXLINELENGTH); 
-
 // **********************************
 // * WIFI                           *
 // **********************************
@@ -552,7 +549,6 @@ void setup()
     ticker.attach(0.6, tick);
 
     // * Start software serial for p1 meter
-    // * p1_serial.begin(BAUD_RATE);
     p1_serial.begin (BAUD_RATE, swSerialConfig, P1_SERIAL_RX, -1, true, P1_MAXLINELENGTH); 
 
     // * Get MQTT Server settings
