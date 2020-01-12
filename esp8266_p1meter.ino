@@ -347,13 +347,13 @@ bool decode_telegram(int len)
     // 1-0:52.7.0 = L2 Voltage
     if (strncmp(telegram, "1-0:52.7.0", strlen("1-0:52.7.0")) == 0)
     {
-        L1_VOLTAGE = getValue(telegram, len, '(', ')');
+        L2_VOLTAGE = getValue(telegram, len, '(', ')');
     }   
     // 1-0:72.7.0(229.0*V)
     // 1-0:72.7.0 = L3 Voltage
     if (strncmp(telegram, "1-0:72.7.0", strlen("1-0:72.7.0")) == 0)
     {
-        L1_VOLTAGE = getValue(telegram, len, '(', ')');
+        L3_VOLTAGE = getValue(telegram, len, '(', ')');
     }
     
     // 0-0:96.14.0(0001)
